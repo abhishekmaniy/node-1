@@ -25,21 +25,21 @@ pipeline {
     stage('Install Dependencies') {
       steps {
         echo '📦 Installing dependencies...'
-        sh 'npm install'
+        bat 'wsl npm install'
       }
     }
 
     stage('Build') {
       steps {
         echo '🏗️ Compiling TypeScript...'
-        sh 'npm run build'
+        bat 'wsl npm run build'
       }
     }
 
     stage('Run Server') {
       steps {
         echo '🚀 Starting the Node.js server...'
-        sh 'nohup npm run dev &'
+        bat 'wsl nohup npm run dev &'
       }
     }
 
