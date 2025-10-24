@@ -39,7 +39,7 @@ pipeline {
     stage('Run Server') {
       steps {
         echo '🚀 Starting the Node.js server...'
-        bat 'nohup npm run dev &'
+        bat ' npm run dev'
       }
     }
 
