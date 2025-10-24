@@ -1,13 +1,16 @@
 pipeline {
   agent any
 
+  tools {
+    nodejs "node20"   // The name you gave in Jenkins NodeJS tool config
+  }
+
   options {
     timestamps()
     ansiColor('xterm')
   }
 
   environment {
-    // Jenkins automatically sets this for multibranch pipelines
     BRANCH_NAME = "${env.BRANCH_NAME}"
   }
 
@@ -28,15 +31,14 @@ pipeline {
 
     stage('Build') {
       steps {
-        echo '🏗️ Building the application...'
+        echo '🏗️ Compiling TypeScript...'
         sh 'npm run build'
       }
     }
 
     stage('Run Server') {
       steps {
-        echo '🚀 Starting the server...'
-        // Run your app in the background (non-blocking)
+        echo '🚀 Starting the Node.js server...'
         sh 'nohup npm run dev &'
       }
     }
