@@ -36,10 +36,17 @@ pipeline {
       }
     }
 
-    stage('Run Server') {
+    stage('Build & Push Docker') {
       steps {
-        echo '🚀 Starting the Node.js server...'
-        bat ' npm run dev'
+        echo '� Building Docker image and pushing to Docker Hub...'
+        withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
+          // Build image tagged with build number
+          bat 'docker build -t %DOCKERHUB_USER%/node-1:%BUILD_NUMBER% .'
+
+          // Login and push (Windows CMD style)
+          bat 'echo %DOCKERHUB_PASS% | docker login -u %DOCKERHUB_USER% --password-stdin'
+          bat 'docker push %DOCKERHUB_USER%/node-1:%BUILD_NUMBER%'
+        }
       }
     }
 
