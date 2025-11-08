@@ -6,13 +6,16 @@ metadata:
 spec:
   project: repo-1-main
   source:
-    repoURL: 'https://github.com/your-repo/your-project.git'
+    repoURL: 'https://github.com/abhishekmaniy/node-1.git'
     targetRevision: main
     path: k8s
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: default
   syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+
     automated:
       prune: true
       selfHeal: true
