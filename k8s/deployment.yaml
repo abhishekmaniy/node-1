@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: repo-1-dev-deployment
+  namespace: dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: repo-1-dev
+  template:
+    metadata:
+      labels:
+        app: repo-1-dev
+    spec:
+      containers:
+      - name: repo-1
+        image: repo-1:__BUILD_NUMBER__
+        ports:
+        - containerPort: 3000
