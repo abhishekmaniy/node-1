@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-rbac-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-rbac-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  policy.csv: |
+    p, role:prod-role, applications, get, repo-1-main/repo-1-main-app, allow
+    g, prod-user, role:prod-role
+  scopes: '[groups, email]'

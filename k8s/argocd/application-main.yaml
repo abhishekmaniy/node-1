@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: repo-1-main-app
+  namespace: argocd
+spec:
+  project: repo-1-main
+  source:
+    repoURL: 'https://github.com/your-repo/your-project.git'
+    targetRevision: main
+    path: k8s
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

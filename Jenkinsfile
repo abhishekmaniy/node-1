@@ -50,6 +50,28 @@ pipeline {
       }
     }
 
+    stage('Deploy to K8s') {
+      steps {
+        echo '🚀 Deploying to Kubernetes...'
+        withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+          // Configure git
+          bat 'git config --global user.email "jenkins@example.com"'
+          bat 'git config --global user.name "Jenkins"'
+
+          // Replace placeholder in deployment.yaml
+          bat 'powershell -Command "(Get-Content k8s/deployment.yaml) -replace \'__BUILD_NUMBER__\', \'%BUILD_NUMBER%\' | Set-Content k8s/deployment.yaml"'
+          
+          // Add, commit, and push changes
+          bat 'git add k8s/deployment.yaml'
+          bat 'git commit -m "Update deployment to build %BUILD_NUMBER%"'
+          bat 'git push https://%GIT_USER%:%GIT_PASS%@github.com/your-repo/your-project.git HEAD:main'
+        }
+        
+        // Apply Kubernetes configurations
+        bat 'kubectl apply -f k8s/'
+      }
+    }
+
     stage('Deploy Confirmation') {
       steps {
         echo "✅ Build and deployed successfully for branch: ${env.BRANCH_NAME}"
