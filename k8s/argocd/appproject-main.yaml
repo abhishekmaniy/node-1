@@ -6,7 +6,7 @@ metadata:
 spec:
   description: "Project for the main branch of repo-1"
   sourceRepos:
-  - 'https://github.com/your-repo/your-project.git'
+  - 'https://github.com/abhishekmaniy/node-1.git'
   destinations:
   - namespace: default
     server: https://kubernetes.default.svc
