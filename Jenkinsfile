@@ -59,12 +59,12 @@ pipeline {
           bat 'git config --global user.name "abhishekmaniy"'
 
           // Replace image tag with build number
-          bat '''
-          powershell -Command "(Get-Content k8s/deployment.yaml) `
-            -replace 'image: abhishekmaniyar3811/node-1(:[\\w.-]+)?', `
-            'image: abhishekmaniyar3811/node-1:%BUILD_NUMBER%' `
-            | Set-Content k8s/deployment.yaml"
-          '''
+         bat """
+          powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+          "$content = Get-Content 'k8s/deployment.yaml' -Raw; ^
+          $content = $content -replace 'image: abhishekmaniyar3811/node-1(:[\\w.-]+)?', 'image: abhishekmaniyar3811/node-1:%BUILD_NUMBER%'; ^
+          Set-Content 'k8s/deployment.yaml' -Value $content"
+        """
 
           // Commit and push changes
           bat 'git add k8s/deployment.yaml'
@@ -72,8 +72,6 @@ pipeline {
           bat 'git push https://%GIT_USER%:%GIT_PASS%@github.com/abhishekmaniyar3811/node-repo-1.git HEAD:develop'
         }
 
-        // Apply Kubernetes deployment (if you want immediate deploy)
-        bat 'kubectl apply -f k8s/'
       }
     }
 
