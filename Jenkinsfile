@@ -59,12 +59,9 @@ pipeline {
           bat 'git config --global user.email "abhishekmaniyar502@gmail.com"'
           bat 'git config --global user.name "abhishekmaniy"'
 
-          // Dynamically replace image tag with Jenkins build number
+          // 🔧 Update production image tag dynamically
           bat '''
-          powershell -Command "(Get-Content k8s/deployment.yaml) `
-            -replace 'image: abhishekmaniyar3811/node-1-prod(:[\\w.-]+)?', `
-            'image: abhishekmaniyar3811/node-1-prod:%BUILD_NUMBER%' `
-            | Set-Content k8s/deployment.yaml"
+            powershell -NoProfile -ExecutionPolicy Bypass -Command "$content = Get-Content 'k8s/deployment.yaml' -Raw; $content = $content -replace 'image: abhishekmaniyar3811/node-1-prod(:[\\w.-]+)?', 'image: abhishekmaniyar3811/node-1-prod:%BUILD_NUMBER%'; Set-Content 'k8s/deployment.yaml' -Value $content"
           '''
 
           // Commit and push updated deployment file
@@ -72,9 +69,6 @@ pipeline {
           bat 'git commit -m "Update image tag to build %BUILD_NUMBER%" || echo No changes to commit'
           bat 'git push https://%GIT_USER%:%GIT_PASS%@github.com/abhishekmaniyar3811/node-repo-1.git HEAD:main'
         }
-
-        // Apply updated Kubernetes configurations
-        bat 'kubectl apply -f k8s/'
       }
     }
 
