@@ -50,6 +50,33 @@ pipeline {
       }
     }
 
+    stage('Deploy to K8s (Dev)') {
+      steps {
+        echo '🚀 Updating Kubernetes deployment for development...'
+        withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+          // Configure Git identity
+          bat 'git config --global user.email "abhishekmaniyar502@gmail.com"'
+          bat 'git config --global user.name "abhishekmaniy"'
+
+          // Replace image tag with build number
+          bat '''
+          powershell -Command "(Get-Content k8s/deployment.yaml) `
+            -replace 'image: abhishekmaniyar3811/node-1(:[\\w.-]+)?', `
+            'image: abhishekmaniyar3811/node-1:%BUILD_NUMBER%' `
+            | Set-Content k8s/deployment.yaml"
+          '''
+
+          // Commit and push changes
+          bat 'git add k8s/deployment.yaml'
+          bat 'git commit -m "Update dev image tag to build %BUILD_NUMBER%" || echo No changes to commit'
+          bat 'git push https://%GIT_USER%:%GIT_PASS%@github.com/abhishekmaniyar3811/node-repo-1.git HEAD:develop'
+        }
+
+        // Apply Kubernetes deployment (if you want immediate deploy)
+        bat 'kubectl apply -f k8s/'
+      }
+    }
+
     stage('Deploy Confirmation') {
       steps {
         echo "✅ Build and deployed successfully for branch: ${env.BRANCH_NAME}"
