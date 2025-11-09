@@ -67,7 +67,7 @@ pipeline {
           // Commit and push updated deployment file
           bat 'git add k8s/deployment.yaml'
           bat 'git commit -m "Update image tag to build %BUILD_NUMBER%" || echo No changes to commit'
-          bat 'git push https://%GIT_USER%:%GIT_PASS%@github.com/abhishekmaniyar3811/node-repo-1.git HEAD:main'
+          bat 'git push https://%GIT_USER%:%GIT_PASS%@github.com/abhishekmaniy/node-1.git HEAD:main'
         }
       }
     }
