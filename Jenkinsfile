@@ -59,13 +59,13 @@ pipeline {
           bat 'git config --global user.name "abhishekmaniy"'
 
            // Update image tag in deployment.yaml
-          bat """
+           bat '''
             powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-            "$$content = Get-Content 'k8s/deployment.yaml' -Raw; ^
-            $$content = $$content -replace 'image: abhishekmaniyar3811/node-1(:[\\w.-]+)?', 'image: abhishekmaniyar3811/node-1:%BUILD_NUMBER%'; ^
-            Set-Content 'k8s/deployment.yaml' -Value $$content"
-          """
-          
+            "$content = Get-Content 'k8s/deployment.yaml' -Raw; ^
+            $content = $content -replace 'image: abhishekmaniyar3811/node-1(:[\\w.-]+)?', 'image: abhishekmaniyar3811/node-1:%BUILD_NUMBER%'; ^
+            Set-Content 'k8s/deployment.yaml' -Value $content"
+          '''
+
           // Commit and push changes
           bat 'git add k8s/deployment.yaml'
           bat 'git commit -m "Update dev image tag to build %BUILD_NUMBER%" || echo No changes to commit'
