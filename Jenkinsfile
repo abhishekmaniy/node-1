@@ -58,12 +58,9 @@ pipeline {
           bat 'git config --global user.email "abhishekmaniyar502@gmail.com"'
           bat 'git config --global user.name "abhishekmaniy"'
 
-           // Update image tag in deployment.yaml
-           bat '''
-            powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-            "$content = Get-Content 'k8s/deployment.yaml' -Raw; ^
-            $content = $content -replace 'image: abhishekmaniyar3811/node-1(:[\\w.-]+)?', 'image: abhishekmaniyar3811/node-1:%BUILD_NUMBER%'; ^
-            Set-Content 'k8s/deployment.yaml' -Value $content"
+           // ✅ Use single PowerShell command (no line breaks, no caret ^)
+          bat '''
+            powershell -NoProfile -ExecutionPolicy Bypass -Command "$content = Get-Content 'k8s/deployment.yaml' -Raw; $content = $content -replace 'image: abhishekmaniyar3811/node-1(:[\\w.-]+)?', 'image: abhishekmaniyar3811/node-1:%BUILD_NUMBER%'; Set-Content 'k8s/deployment.yaml' -Value $content"
           '''
 
           // Commit and push changes
